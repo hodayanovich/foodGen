@@ -1,0 +1,185 @@
+/**
+ * Calculates when a new need to be placed on food items based on the menu
+ * adds a counter of how many times an item is served
+ * uses a recipe sheet to calculate how often
+ * @customfunction
+ * @OnlyCurrentDoc
+ */
+function updateMealTally() {
+  var spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+
+  // Get the sheet with the menu
+  var menuMapping = spreadsheet.getSheetByName("Menu Mapping");
+  // Get the data from the menu
+  var mealListData = menuMapping.getDataRange().getValues();
+  var orderSheet = spreadsheet.getSheetByName("Order Generator");
+  var orderSheetData = orderSheet.getDataRange().getValues();
+
+  // Clear the tally column
+  orderSheet.getRange(2, 6, orderSheet.getLastRow() - 1, 1).clearContent();
+
+  var fromDate = orderSheet.getRange('A2').getValue();
+  var toDate = orderSheet.getRange('B2').getValue();
+
+  // Initialize an object to store the tally of items
+  var mealTally = {};
+
+  // Iterate through the item list and count the occurrences of each item
+  for (var i = fromDate - 1; i < toDate; i++) {
+    var items = [
+      mealListData[i][2], mealListData[i][3], mealListData[i][4], mealListData[i][5],mealListData[i][9],
+      mealListData[i][10], mealListData[i][11], mealListData[i][12], mealListData[i][13], mealListData[i][14]
+    ];
+    // If new, add a new item
+    for (var j = 0; j < items.length; j++) {
+      if (!mealTally[items[j]]) {
+        mealTally[items[j]] = 1;
+      } else {
+        mealTally[items[j]]++;
+      }
+    }
+  }
+
+  // Prepare the data for the tally column
+  var tallyColumnData = orderSheetData.slice(1).map(function (row) {
+    return row[4] ? [mealTally[row[4]] || ''] : [''];
+  });
+
+  // Update the tally in the Order Generator sheet
+  if (tallyColumnData.length > 0) {
+    orderSheet.getRange(2, 6, tallyColumnData.length, 1).setValues(tallyColumnData);
+  }
+
+  return mealTally;
+}
+
+
+
+/**
+ * Iterates through Menu Mapping tab
+ * For every new item found in the given date range, add it to the uniqueItems array
+ * returns the unique item at the given index
+ * @customfunction
+ * @param {number} index - The desired index of the food item in the array.
+ * @returns {string} - The unique food item at the specified index.
+ * @OnlyCurrentDoc
+ */
+function getMeals() {
+  var spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+  var menuMapping = spreadsheet.getSheetByName("Menu Mapping");
+  var mealListData = menuMapping.getDataRange().getValues();
+  var orderGenerator = spreadsheet.getSheetByName("Order Generator");
+  var fromDate = orderGenerator.getRange('A2').getValue();
+  var toDate = orderGenerator.getRange('B2').getValue();
+
+  // Clear the menu items column
+  orderGenerator.getRange(2, 5, orderGenerator.getLastRow() - 1, 1).clearContent();
+
+  var uniqueMeals = {};
+
+  // These columns are hardcoded in - make sure they match up to all of the food options 
+  for (var i = fromDate - 1; i < toDate; i++) {
+    var meals = [
+      mealListData[i][2], mealListData[i][3], mealListData[i][4], mealListData[i][5], mealListData[i][9], 
+      mealListData[i][10], mealListData[i][11], mealListData[i][12], mealListData[i][13], mealListData[i][14], mealListData[i][15]
+    ];
+  
+    // If new, add new item and if it isn't blank
+    for (var j = 0; j < meals.length; j++) {
+      if (!uniqueMeals.hasOwnProperty(meals[j]) && meals[j] !== "" && meals[j] !== 'NONE') {
+        uniqueMeals[meals[j]] = [];
+        uniqueMeals[meals[j]].push(mealListData[i][5]);
+      }
+    }
+  }
+
+  var uniqueKeysCount = Object.keys(uniqueMeals).length;
+
+
+  // Output to the sheet
+var outputRange = orderGenerator.getRange(2, 5, uniqueKeysCount, 1);
+var outputData = [];
+
+for (var meal in uniqueMeals) {
+  if (uniqueMeals.hasOwnProperty(meal)) {
+    outputData.push([meal]);
+  }
+}
+
+  outputRange.setValues(outputData);
+
+  return uniqueMeals;
+
+}
+
+
+/**
+ * Generates the amount to order from each vendor.
+ * Iterates through the menu and adds meal ingredients to the order list.
+ * @customfunction
+ * @OnlyCurrentDoc
+ */
+function orderGenerator() {
+  var uniqueMeals = getMeals();
+  var currentMeals = updateMealTally();
+
+  var spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+  var orderSheet = spreadsheet.getSheetByName("Order Generator");
+  var recipeSheet = spreadsheet.getSheetByName("Recipes");
+  var recipeSheetData = recipeSheet.getDataRange().getValues();
+  var vendor = orderSheet.getRange('A6').getValue();
+
+  // Clear the columns for ingredients
+  orderSheet.getRange(2, 7, orderSheet.getLastRow() - 1, 4).clearContent();
+
+  var Ingredients = {}; // Object to store ingredient information
+
+  for (var i = 1; i < recipeSheetData.length; i++) {
+    if (recipeSheetData[i][0] && recipeSheetData[i][5].trim() === vendor && uniqueMeals.hasOwnProperty(recipeSheetData[i][0])) {
+      var meal = recipeSheetData[i][0]; 
+      var ingredient = recipeSheetData[i][4];
+      var quantity = 0; 
+      for (var d = 0; d <= currentMeals[recipeSheetData[i][0]]; d++) {
+        var event = uniqueMeals[recipeSheetData[i][0]]; 
+          if(event = "PRE-CAMP") {
+            quantity += recipeSheetData[i][2] / 2;
+          } else {
+            quantity += recipeSheetData[i][2]
+          } 
+      }
+      if(uniqueMeals[recipeSheetData[i][0]]) 
+      var type = recipeSheetData[i][3];
+
+
+      if (!Ingredients[meal]) {
+        Ingredients[meal] = [];
+      }
+
+      Ingredients[meal].push([ingredient, quantity, type]);
+    }
+  }
+  
+  //only start printing stuff on the 2nd row
+  var i = 2;
+
+  for (var meal in Ingredients) {
+    if (Ingredients.hasOwnProperty(meal)) {
+      orderSheet.getRange(i, 7).setValue(meal);
+
+      var values = Ingredients[meal];
+      var k = i;
+
+      for (var j = 0; j < values.length; j++) {
+        orderSheet.getRange(k, 8).setValue(values[j][0]); // ingredient
+        orderSheet.getRange(k, 9).setValue(values[j][1]); // quantity
+        orderSheet.getRange(k, 10).setValue(values[j][2]); // type
+        k++;
+      }
+
+      i = k;
+    }
+  }
+ 
+  var ingredients = [];
+  getTotals();
+}
