@@ -1,0 +1,29 @@
+function fillDates(startDate) {
+  var sheet = SpreadsheetApp.getActiveSheet();
+  var range = sheet.getActiveCell();
+  var numRows = sheet.getMaxRows();
+  
+  // Get the column index of the active cell
+  var columnIndex = range.getColumn();
+  
+  // Check if the input is a valid date
+  if (!startDate || !isValidDate(startDate)) {
+    return "Invalid date";
+  }
+  
+  // Clear the current content in the column
+  sheet.getRange(1, columnIndex, numRows, 1).clearContent();
+  
+  // Loop through the rows and fill in the subsequent dates
+  for (var i = 0; i < numRows; i++) {
+    var currentDate = new Date(startDate.getTime() + i * 24 * 60 * 60 * 1000);
+    sheet.getRange(i + 1, columnIndex).setValue(currentDate);
+  }
+}
+
+function isValidDate(date) {
+  return Object.prototype.toString.call(date) === "[object Date]" && !isNaN(date.getTime());
+}
+
+
+
