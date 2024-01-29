@@ -1,0 +1,78 @@
+function mergeDuplicateItems(itemList) {
+  var itemQuantities = {};
+
+  for (var i = 0; i < itemList.length; i++) {
+    var item = itemList[i][0];
+    var quantity = itemList[i][1];
+    var type = itemList[i][2];
+
+    if (itemQuantities.hasOwnProperty(item)) {
+      itemQuantities[item] += quantity;
+    } else {
+      itemQuantities[item] = quantity;
+    }
+  }
+
+  var mergedItemList = [];
+  for (var itemName in itemQuantities) {
+    if (itemQuantities.hasOwnProperty(itemName)) {
+      mergedItemList.push([itemName, itemQuantities[itemName], type]);
+    }
+  }
+
+  return mergedItemList;
+}
+
+function getTotals() {
+  var spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+  var orderSheet = spreadsheet.getSheetByName("Order Generator");
+  var orderSheetData = orderSheet.getDataRange().getValues();
+
+  //CLEAR COLUMNS
+  var lastColumn = orderSheet.getLastColumn();
+  
+  // Specify the column numbers to delete
+  var columnsToDelete = [12, 13, 14];
+  
+  // Iterate over the columns to delete
+  for (var i = columnsToDelete.length - 1; i >= 0; i--) {
+    var columnToDelete = columnsToDelete[i];
+    
+    // Get the range of the column to delete, starting from the second row
+    var range = orderSheet.getRange(2, columnToDelete, orderSheet.getLastRow() - 1, 1);
+    
+    // Delete the range
+    range.clearContent();
+  }
+
+  // Import data from Order Generator sheet about current ingredient list
+  var orderSheetData = spreadsheet.getRange("H3:J" + orderSheet.getLastRow()).getValues(); // Get data from columns 8, 9, 10
+  var itemList = [];
+
+  for (var i = 0; i < orderSheetData.length; i++) {
+    var item = orderSheetData[i][0];
+    var quantity = orderSheetData[i][1];
+    var type = orderSheetData[i][2];
+
+    if (item && quantity) {
+      itemList.push([item, quantity, type]);
+    }
+  }
+
+  // Call the function to merge duplicate items
+  var mergedItems = mergeDuplicateItems(itemList);
+  console.log(mergedItems);
+  // Print the merged items
+  var k = 2;
+  for (var i = 0; i < mergedItems.length; i++) {
+    var item = mergedItems[i][0];
+    var quantity = mergedItems[i][1];
+    var type = mergedItems[i][2];
+
+    orderSheet.getRange(k,12).setValue(item); // ingredient
+    orderSheet.getRange(k,13).setValue(quantity); // quantity
+    orderSheet.getRange(k,14).setValue(type); // type
+    k++;
+  }
+
+}
