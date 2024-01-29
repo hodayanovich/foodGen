@@ -1,0 +1,15 @@
+//Converts date to row in Menu Mapping sheet
+// Used in for loop for startDate and endDate in updateInvetory and getItem
+
+function findRowWithValue(value) {
+  var sheet = SpreadsheetApp.getActiveSpreadsheet();
+  var itemSheet = sheet.getSheetByName("Menu Mapping");
+  var data = itemSheet.getDataRange().getValues();
+  for (var i = 1; i < data.length; i++) { // Assuming the first row is header
+    var date = new Date(data[i][1]);
+    if (value.getTime() == date.getTime()) {
+      return i + 1;
+    }
+  }
+  return -1; // Return -1 if the value is not found
+}
