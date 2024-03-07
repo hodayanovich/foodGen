@@ -30,6 +30,13 @@ The Menu and Order Generator is a versatile tool designed to streamline menu pla
    
 6. **Order Generation:** By specifying a date range and vendor, users can generate a comprehensive shopping list tailored to their menu plan, streamlining the ordering process and ensuring accurate inventory management.
 
+## Benefits
+
+- **Efficiency:** Streamlines menu planning, recipe management, and order generation processes, saving time and effort.
+- **Accuracy:** Provides accurate data analysis and order recommendations, minimizing errors and optimizing resource allocation.
+- **Customization:** Offers flexibility in menu customization and headline branding, allowing users to tailor the tool to their specific needs.
+- **Centralization:** Serves as a centralized hub for menu planning, recipe management, and order generation, promoting organizational efficiency and consistency.
+
 # Getting Started with FoodGen
 
 Welcome to FoodGen! Before you start using the tool, follow these steps to customize your menu:
@@ -70,11 +77,3 @@ Welcome to FoodGen! Before you start using the tool, follow these steps to custo
    - Press the "Generate" button to create a comprehensive shopping list.
 
 For support or assistance, please email [hodaya@gmail.com](mailto:hodaya@gmail.com).
-
-
-## Benefits
-
-- **Efficiency:** Streamlines menu planning, recipe management, and order generation processes, saving time and effort.
-- **Accuracy:** Provides accurate data analysis and order recommendations, minimizing errors and optimizing resource allocation.
-- **Customization:** Offers flexibility in menu customization and headline branding, allowing users to tailor the tool to their specific needs.
-- **Centralization:** Serves as a centralized hub for menu planning, recipe management, and order generation, promoting organizational efficiency and consistency.
