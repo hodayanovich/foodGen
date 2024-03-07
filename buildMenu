@@ -1,0 +1,137 @@
+function setMenuCalendar() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sourceSheet = ss.getSheetByName('Set Up');
+  var targetSheet = ss.getSheetByName('Menu Mapping');
+
+  var startDate = sourceSheet.getRange('D4').getValue();
+  var endDate = sourceSheet.getRange('D5').getValue();
+
+  targetSheet.clear();
+
+  targetSheet.getRange('A1').setValue('Day of Week');
+  targetSheet.getRange('B1').setValue('Date');
+  setHeader()
+
+  var currentDate = new Date(startDate);
+  var rowIndex = 2;
+
+  while (currentDate <= endDate) {
+    var dayOfWeek = getDayOfWeek(currentDate);
+    var breakfast = '';
+    var lunch = '';
+    var dinner = '';
+
+    // Set meal options for Fridays
+    if (dayOfWeek === 'Friday') {
+      breakfast = 'CEREAL';
+      lunch = 'FRI LUNCH';
+      dinner = 'FRI NIGHT DIN';
+    }
+    // Set meal options for Saturdays
+    else if (dayOfWeek === 'Saturday') {
+      breakfast = 'CEREAL';
+      lunch = 'SHAB LUNCH';
+      dinner = 'SEUDAH SHLISHIT';
+    }
+
+    targetSheet.getRange(rowIndex, 1).setValue(dayOfWeek);
+    targetSheet.getRange(rowIndex, 2).setValue(currentDate);
+    targetSheet.getRange(rowIndex, 3).setValue(breakfast);
+    targetSheet.getRange(rowIndex, 4).setValue(lunch);
+    targetSheet.getRange(rowIndex, 5).setValue(dinner);
+    
+    currentDate.setDate(currentDate.getDate() + 1);
+    rowIndex++;
+  }
+
+  var rangesAndRules = new Map([
+    ['C', ['Meal Option Data!$A$2:$A', 'breakfast']], // Light Salmon color for breakfast
+    ['D', ['Meal Option Data!$E$2:$E', 'lunch']], // Pale Green color for lunch
+    ['E', ['Meal Option Data!$I$2:$I', 'dinner']], // Sky Blue color for dinner
+    ['F', ['Event Options!$A$2:$A', 'event']],
+    ['J', ['Meal Option Data!$AK$2:$AK', 'addition']], 
+    ['K', ['Meal Option Data!$M$2:$M', 'appetizer', '#f4cccc']], 
+    ['L', ['Meal Option Data!$Q$2:$Q', 'chicken', '#f4cccc']], 
+    ['M', ['Meal Option Data!$U$2:$U', 'fnkugel', '#f4cccc']], 
+    ['N', ['Meal Option Data!$Y$2:$Y', 'salad', '#d0e0e3']], 
+    ['O', ['Meal Option Data!$AC$2:$AC', 'sdkugel', '#d0e0e3']], 
+    ['P', ['Meal Option Data!$AG$2:$AG', 'melava_malka', '#d0e0e3']] 
+  ]);
+
+var endRow = rowIndex - 1;
+
+rangesAndRules.forEach(function(rangeInfo, column) {
+  var col = targetSheet.getRange(column + '2:' + column + endRow);
+  var rule = SpreadsheetApp.newDataValidation()
+    .requireValueInRange(targetSheet.getRange(rangeInfo[0]))
+    .setAllowInvalid(false)
+    .build();
+  col.setDataValidation(rule);
+  
+  if (rangeInfo.length > 2) {
+    var color = rangeInfo[2];
+    col.setBackground(color);
+  }
+  });
+
+}
+
+function getDayOfWeek(date) {
+  var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  return days[date.getDay()];
+}
+
+function setHeader() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var targetSheet = ss.getSheetByName('Menu Mapping'); // Replace 'menumapping' with the name of your target sheet
+  
+  var headers = [
+    ['Day', 'Date', 'Breakfast', 'Lunch', 'Dinner', 'Event', 'Headline Notes', 'Headline - Menu', 'Layout - Menu', 'ADDITION', 'Friday Night Appetizer', 'Friday Night Chicken', 'Friday Night Kugel', 'Shabbat Salad', 'Shabbat Kugel', 'Melva Malka']
+  ];
+  
+  var headerRange = targetSheet.getRange('A1:P1');
+  
+  // Set values and background color
+  headerRange.setValues(headers);
+  headerRange.setBackground('#CCCCCC'); // Change background color
+  
+  // Set font style and size
+  headerRange.setFontWeight('bold');
+  headerRange.setFontSize(10);
+  
+  // Set text alignment
+  headerRange.setHorizontalAlignment('center');
+  headerRange.setVerticalAlignment('middle');
+  
+  // Apply borders
+  var borders = {
+    top: true,
+    bottom: true,
+    left: true,
+    right: true
+  };
+  headerRange.setBorder(true, true, true, true, null, null, null, SpreadsheetApp.BorderStyle.SOLID_MEDIUM); // Change border style
+  
+  // Set text wrapping
+  headerRange.setWrap(true);
+  
+  // Freeze the first row
+  targetSheet.setFrozenRows(1);
+}
+
+
+function colorRows() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var targetSheet = ss.getSheetByName('Menu Mapping'); // Replace 'menumapping' with the name of your target sheet
+  
+  // Define the range of rows you want to color
+  var startRow = 2; // Start coloring from row 2
+  var endRow = 10; // End coloring at row 10
+  var numRows = endRow - startRow + 1; // Calculate the number of rows to color
+  
+  var range = targetSheet.getRange(startRow, 1, numRows, targetSheet.getLastColumn()); // Get the range of rows to color
+  
+  // Set the background color of the rows
+  range.setBackground('#FFFF00'); // Change the color code as needed
+}
+
