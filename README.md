@@ -37,6 +37,11 @@ The Menu and Order Generator is a versatile tool designed to streamline menu pla
 - **Customization:** Offers flexibility in menu customization and headline branding, allowing users to tailor the tool to their specific needs.
 - **Centralization:** Serves as a centralized hub for menu planning, recipe management, and order generation, promoting organizational efficiency and consistency.
 
+
+
+
+
+
 # Getting Started with FoodGen
 
 Welcome to FoodGen! Before you start using the tool, follow these steps to customize your menu:
