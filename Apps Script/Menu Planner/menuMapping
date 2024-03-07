@@ -1,1 +1,109 @@
+function onEdit(e) {
+  var sheet = e.source.getActiveSheet();
+  var range = e.range;
+  
+  // Check if the edited cell is in the range of interest
+  if (sheet.getName() == "Menu Mapping" && range.getRow() > 1) {
+    var date = sheet.getRange(range.getRow(), 2).getValue();
+    var breakfast = sheet.getRange(range.getRow(), 3).getValue();
+    var lunch = sheet.getRange(range.getRow(), 4).getValue();
+    var dinner = sheet.getRange(range.getRow(), 5).getValue();
+    var appetizer = sheet.getRange(range.getRow(), 11).getValue(); // If needed
+    var chicken = sheet.getRange(range.getRow(), 12).getValue(); // If needed
+    var kugel = sheet.getRange(range.getRow(), 13).getValue(); // If needed
+    var salad = sheet.getRange(range.getRow(), 14).getValue(); // If needed
+    var sdaykugel = sheet.getRange(range.getRow(), 15).getValue(); // If needed
+    var melava_malka = sheet.getRange(range.getRow(), 16).getValue(); // If needed
+    var event = sheet.getRange(range.getRow(), 6).getValue();
+    var headline = sheet.getRange(range.getRow(), 7).getValue();
+    
+    var formattedDay = "";
+    
+    if (Utilities.formatDate(date, Session.getScriptTimeZone(), "E") == "Fri") {
+      formattedDay = fridayFormat(sheet, breakfast, lunch, dinner, appetizer, chicken, kugel);
+    } else if (Utilities.formatDate(date, Session.getScriptTimeZone(), "E") == "Sat") {
+      formattedDay = shabbatFormat(sheet, breakfast, salad, sdaykugel, lunch, dinner, melava_malka);
+    } else {
+      formattedDay = normalDayFormat(sheet, breakfast, lunch, dinner);
+    }
+    
+    var formattedHeadline = headlineFormat(sheet, event, headline);
 
+    // Set the formatted value in the corresponding cell
+    sheet.getRange(range.getRow(), 9).setValue(formattedDay);
+    sheet.getRange(range.getRow(), 8).setValue(formattedHeadline);
+  }
+}
+
+function vlookup(range, index) {
+  var value = '';
+  for (var i = 0; i < range.length; i++) {
+    if (range[i][0] == index) {
+      value = range[i][3];
+      break;
+    }
+  }
+  return value;
+}
+
+function normalDayFormat(sheet, breakfast, lunch, dinner) {
+  var mealOptionsLookup = sheet.getRange("MealOptionsLookup").getValues(); // Assuming MealOptionsLookup is a named range
+  var formattedString = "";
+  
+  try {
+    formattedString = "B: " + vlookup(mealOptionsLookup, breakfast) + "\n" +
+                      "L: " + vlookup(mealOptionsLookup, lunch) + "\n" +
+                      "D: " + vlookup(mealOptionsLookup, dinner) + "\n";
+  } catch (error) {
+    formattedString = "ERROR: One of your menu components does not match a nickname on Meal Options tab.";
+  }
+  
+  return formattedString;
+}
+
+function fridayFormat(sheet, breakfast, lunch, appetizer, chicken, kugel, dinner) {
+  var mealOptionsLookup = sheet.getRange("MealOptionsLookup").getValues(); // Assuming MealOptionsLookup is a named range
+  var formattedString = "";
+  
+  try {
+    formattedString = "B: " + vlookup(mealOptionsLookup, breakfast) + "\n" +
+                      "L: " + vlookup(mealOptionsLookup, lunch) + "\n" +
+                      "D: " + vlookup(mealOptionsLookup, appetizer) + ", " +
+                             vlookup(mealOptionsLookup, chicken) + ", " +
+                             vlookup(mealOptionsLookup, kugel) + ", " +
+                             vlookup(mealOptionsLookup, dinner) + "\n";
+  } catch (error) {
+    formattedString = "ERROR: One of your menu components does not match a nickname on Meal Options tab.";
+  }
+  
+  return formattedString;
+}
+
+function shabbatFormat(sheet, breakfast, salad, kugel, lunch, seudah_shlishit, melava_malka) {
+  var mealOptionsLookup = sheet.getRange("MealOptionsLookup").getValues(); // Assuming MealOptionsLookup is a named range
+  var formattedString = "";
+  
+  try {
+    formattedString = "B: " + vlookup(mealOptionsLookup, breakfast) + "\n" +
+                      "L: " + vlookup(mealOptionsLookup, salad) + ", " + vlookup(mealOptionsLookup, kugel) + ", " + vlookup(mealOptionsLookup, lunch) + "\n" +
+                      "SS: " + vlookup(mealOptionsLookup, seudah_shlishit) + "\n" +
+                      "MM: " + vlookup(mealOptionsLookup, melava_malka) + "\n";
+  } catch (error) {
+    formattedString = "ERROR: One of your menu components does not match a nickname on Meal Options tab.";
+  }
+  
+  return formattedString;
+}
+
+function headlineFormat(sheet, event, headline) {
+  var eventOptionsLookup = sheet.getRange("EventOptionsLookup").getValues(); // Assuming EventOptionsLookup is a named range
+  var formattedString = "";
+  
+  try {
+    formattedString = event == "" ? vlookup(eventOptionsLookup, event) : vlookup(eventOptionsLookup, event) + "\n" + headline;
+  } catch (error) {
+    formattedString = "ERROR: Your event does not match a nickname on Event Options tab.";
+  }
+  
+  return formattedString;
+}
