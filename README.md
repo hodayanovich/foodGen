@@ -45,14 +45,15 @@ The Menu and Order Generator is a versatile tool designed to streamline menu pla
 # Getting Started with FoodGen
 
 Welcome to FoodGen! Before you start using the tool, follow these steps to customize your menu:
-Get the Google Spreadsheet template for FoodGen by clicking on this link to make a copy: 
-https://docs.google.com/spreadsheets/d/1mbQIYDpXkvBq5lue5P7rE1y6AHwUOpMEUPEkilT50m8/copy?usp=sharing
 
-1. **Set Date Range and Menu Name:**
+1. **Get Template:**
+   - Get the Google Spreadsheet template for FoodGen by clicking on this link to make a copy: https://docs.google.com/spreadsheets/d/1mbQIYDpXkvBq5lue5P7rE1y6AHwUOpMEUPEkilT50m8/copy?usp=sharing
+     
+2. **Set Date Range and Menu Name:**
    - Define the start and end date of the timeframe of your menu. Fill them in their respective cells to the left.
    - Click on the "Generate Menu" button to proceed.
 
-2. **Menu Options:**
+3. **Menu Options:**
    - **Meal Options:**
      - Assign a meal code/nickname for easy identification (visible when choosing meals).
      - Tag each meal with a label (e.g., B for Breakfast, L for Lunch, D for Dinner).
@@ -62,23 +63,23 @@ https://docs.google.com/spreadsheets/d/1mbQIYDpXkvBq5lue5P7rE1y6AHwUOpMEUPEkilT5
      - Add an event code/nickname.
      - Add a common name/description of what the event is.
 
-3. **Menu Mapping:**
+4. **Menu Mapping:**
    - Each row represents a day (date and day of the week).
    - Populate each day's menu by selecting meals from the dropdown menus.
    - The dropdown menus correspond to the data in your meal options tab, so ensure that the meal option is listed.
    - Customize meals and events using additional columns.
    - As you edit, the code will properly format each day with the meals you assigned it.
 
-4. **Meal Stats:**
+5. **Meal Stats:**
    - View meal frequency to keep your menu balanced and varied.
    - Use this information to optimize your menu plan.
 
-5. **Recipe Database:**
+6. **Recipe Database:**
    - Add all meals from menu options, listing each ingredient:
      - Include a base quantity for each ingredient and specify the vendor.
      - Ensure each ingredient is in its own row for accurate inventory tracking.
 
-6. **Order Generation:**
+7. **Order Generation:**
    - Specify the start and end date for the timeframe you want to order.
    - Choose the vendor from whom you'll be ordering.
    - Press the "Generate" button to create a comprehensive shopping list.
