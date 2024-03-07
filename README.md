@@ -7,7 +7,7 @@ The Menu and Order Generator is a versatile tool designed to streamline menu pla
 
 Key Features:
 
-Menu Planning: Plan optimal menus based on variety, nutritional balance, and user preferences.
+Menu Planning: Plan optimal menus based on variety, nutritional balance, and user preferences. \n
 Data Analysis: Analyze meal frequency and consumption patterns to understand popular dishes and customer preferences.
 Calendar Display: Visualize meal schedules and plan ahead for events with a user-friendly calendar format.
 Headline Customization: Customize headlines and menu sections for clarity and coherence in menu presentation.
