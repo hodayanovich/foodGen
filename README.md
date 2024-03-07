@@ -45,6 +45,8 @@ The Menu and Order Generator is a versatile tool designed to streamline menu pla
 # Getting Started with FoodGen
 
 Welcome to FoodGen! Before you start using the tool, follow these steps to customize your menu:
+Get the Google Spreadsheet template for FoodGen by clicking on this link to make a copy: 
+https://docs.google.com/spreadsheets/d/1mbQIYDpXkvBq5lue5P7rE1y6AHwUOpMEUPEkilT50m8/copy?usp=sharing
 
 1. **Set Date Range and Menu Name:**
    - Define the start and end date of the timeframe of your menu. Fill them in their respective cells to the left.
