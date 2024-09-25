@@ -1,7 +1,7 @@
 # FoodGen
 
 **Menu Planner and Order Generator for Commercial Kitchens**  
-*Developed By: Daya Novich and Moshe Koppel*
+*Developed By: Daya Novich and Mason Koppel*
 
 ## Description
 
